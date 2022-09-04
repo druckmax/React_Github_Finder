@@ -1,17 +1,21 @@
 import React from "react";
-import { FaCodepen, FaStore, FaUser, FaUserFriends, FaUsers } from "react-icons/fa";
+import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa";
 import { useContext, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import { GithubContext } from "../components/contexts/github/GithubContext";
+import RepoList from "../components/repos/RepoList";
 
 function User() {
-  const { getUser, user, loading } = useContext(GithubContext);
+  const { getUser, user, loading, getUserRepos, repos } = useContext(GithubContext);
 
   const params = useParams();
 
   useEffect(() => {
     getUser(params.login);
+    getUserRepos(params.login)
+    // Next comment gets rid of the useEffect warning of missing dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
@@ -94,7 +98,7 @@ function User() {
                 <div className="stat">
                   <div className="stat-title text-md">Website:</div>
                   <div className="text-lg stat-value">
-                    <a href={`https://${blog}`} target="_blank" rel="noreferer"
+                    <a href={`https://${blog}`} target="_blank" rel="noreferrer"
                     >
                       {blog}
                     </a>
@@ -108,7 +112,7 @@ function User() {
                     <a
                       href={`https://twitter.com/${twitter_username}`}
                       target="_blank"
-                      rel="noreferer"
+                      rel="noreferrer"
                     >
                       {twitter_username}
                     </a>
@@ -168,6 +172,8 @@ function User() {
             </div>
           </div>
         </div>
+
+        <RepoList repos={repos} />
       </div>
     </>
   );

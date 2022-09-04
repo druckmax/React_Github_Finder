@@ -4,7 +4,7 @@ This project involves working with the Github API, a global context and the use 
 
 The application is part of the course <a href="https://www.udemy.com/course/react-front-to-back-2022/">"React Front To Back 2022"</a> by Brad Travery.
 
-Further functionality will be added as the course progresses.
+<s>Further functionality will be added as the course progresses.</s>
 
 Watch live:
 https://react-github-finder-app-druckmax.netlify.app/# React_Github_Finder
