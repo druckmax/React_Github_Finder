@@ -5,18 +5,21 @@ import { useParams, Link } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import { GithubContext } from "../components/contexts/github/GithubContext";
 import RepoList from "../components/repos/RepoList";
+import { getUserAndRepos } from "../components/contexts/github/GithubActions";
 
 function User() {
-  const { getUser, user, loading, getUserRepos, repos } = useContext(GithubContext);
+  const { user, loading, repos, dispatch } = useContext(GithubContext);
 
   const params = useParams();
 
   useEffect(() => {
-    getUser(params.login);
-    getUserRepos(params.login)
-    // Next comment gets rid of the useEffect warning of missing dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    dispatch({ type: "SET_LOADING" });
+    const getUserData = async () => {
+      const userData = await getUserAndRepos(params.login);
+      dispatch({ type: "GET_USER_AND_REPOS", payload: userData });
+    };
+    getUserData();
+  }, [dispatch, params.login]);
 
   const {
     name,
@@ -69,9 +72,7 @@ function User() {
                   {type}
                 </div>
                 {hireable && (
-                  <div className="mx-1 badge badge-info opacity-70">
-                    Hireable
-                  </div>
+                  <div className="mx-1 badge badge-info opacity-70">Hireable</div>
                 )}
               </h1>
               <p>{bio}</p>
@@ -98,8 +99,7 @@ function User() {
                 <div className="stat">
                   <div className="stat-title text-md">Website:</div>
                   <div className="text-lg stat-value">
-                    <a href={`https://${blog}`} target="_blank" rel="noreferrer"
-                    >
+                    <a href={`https://${blog}`} target="_blank" rel="noreferrer">
                       {blog}
                     </a>
                   </div>
@@ -128,33 +128,23 @@ function User() {
             <div className="stat-figure text-secondary">
               <FaUsers className="text-3xl md:text-5xl" />
             </div>
-            <div className="stat-title pr-5">
-              Followers
-            </div>
-            <div className="stat-value pr-5 text-3xl md:text-4xl">
-              {followers}
-            </div>
+            <div className="stat-title pr-5">Followers</div>
+            <div className="stat-value pr-5 text-3xl md:text-4xl">{followers}</div>
           </div>
 
           <div className="stat">
             <div className="stat-figure text-secondary">
               <FaUserFriends className="text-3xl md:text-5xl" />
             </div>
-            <div className="stat-title pr-5">
-              Following
-            </div>
-            <div className="stat-value pr-5 text-3xl md:text-4xl">
-              {following}
-            </div>
+            <div className="stat-title pr-5">Following</div>
+            <div className="stat-value pr-5 text-3xl md:text-4xl">{following}</div>
           </div>
 
           <div className="stat">
             <div className="stat-figure text-secondary">
               <FaCodepen className="text-3xl md:text-5xl" />
             </div>
-            <div className="stat-title pr-5">
-              Public Repos
-            </div>
+            <div className="stat-title pr-5">Public Repos</div>
             <div className="stat-value pr-5 text-3xl md:text-4xl">
               {public_repos}
             </div>
@@ -164,9 +154,7 @@ function User() {
             <div className="stat-figure text-secondary">
               <FaStore className="text-3xl md:text-5xl" />
             </div>
-            <div className="stat-title pr-5">
-              Public Gists
-            </div>
+            <div className="stat-title pr-5">Public Gists</div>
             <div className="stat-value pr-5 text-3xl md:text-4xl">
               {public_gists}
             </div>
